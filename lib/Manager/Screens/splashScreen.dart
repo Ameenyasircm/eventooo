@@ -45,10 +45,11 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       if (!mounted || prefs == null) return;
 
       var user = prefs!.getString("phone_number");
+      var userPassword = prefs!.getString("password");
 
       // Navigation logic based on Package Name
       if (packageName == "com.evento.boys" || packageName == "com.evento.manager") {
-        navigateUser(user, loginProvider, const Loginscreen());
+        navigateUser(user, loginProvider, const Loginscreen(),userPassword);
       }
     });
   }
@@ -65,12 +66,12 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     });
   }
 
-  void navigateUser(String? user, LoginProvider loginProvider, Widget screen) {
-    if (user == null) {
+  void navigateUser(String? phoneNumber, LoginProvider loginProvider, Widget screen,String? userPassword) {
+    if (phoneNumber == null) {
       loginProvider.loginphoneController.clear();
       callNextReplacement(screen, context);
     } else {
-      loginProvider.userAuthorized(user, context);
+      loginProvider.userAuthorized(context: context,phone:phoneNumber,password: userPassword!);
     }
   }
 
