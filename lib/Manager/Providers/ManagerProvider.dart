@@ -1,6 +1,7 @@
 import 'dart:io';
-
+import 'package:intl/intl.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class ManagerProvider extends ChangeNotifier{
 
@@ -21,6 +22,74 @@ class ManagerProvider extends ChangeNotifier{
   void setTabIndex(int index) {
     _selectedTabIndex = index;
     notifyListeners();
+  }
+
+
+  // Controllers
+  final TextEditingController dateController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController descController = TextEditingController();
+  final TextEditingController locationController = TextEditingController();
+  final TextEditingController boysController = TextEditingController();
+
+  String selectedMeal = 'Lunch';
+
+  /// 📅 Date Picker
+  Future<void> selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2101),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Color(0xff1A237E),
+              onPrimary: Colors.white,
+              onSurface: Colors.black,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null) {
+      dateController.text = DateFormat('dd/MM/yyyy').format(picked);
+      notifyListeners();
+    }
+  }
+
+  /// 🍽 Meal Change
+  void changeMeal(String value) {
+    selectedMeal = value;
+    notifyListeners();
+  }
+
+  /// ✅ Submit
+  void submit(BuildContext context) {
+
+    // 🔥 API / Firestore call goes here
+    debugPrint("Event Created");
+    debugPrint(nameController.text);
+    debugPrint(dateController.text);
+    debugPrint(selectedMeal);
+    debugPrint(locationController.text);
+    debugPrint(boysController.text);
+    debugPrint(descController.text);
+
+    Navigator.pop(context);
+  }
+
+  @override
+  void dispose() {
+    dateController.dispose();
+    nameController.dispose();
+    descController.dispose();
+    locationController.dispose();
+    boysController.dispose();
+    super.dispose();
   }
 
 }

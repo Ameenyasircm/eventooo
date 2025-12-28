@@ -1,6 +1,9 @@
+import 'package:evento/Constants/my_functions.dart';
 import 'package:evento/Manager/Providers/ManagerProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'create_new_event.dart';
 
 
 class ManagerHomeScreen extends StatelessWidget {
@@ -49,7 +52,9 @@ class ManagerHomeScreen extends StatelessWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   child: ElevatedButton.icon(
-                    onPressed: () {},
+                    onPressed: () {
+                      callNext(CreateEventScreen(), context);
+                    },
                     icon: const Icon(Icons.add, color: Colors.white),
                     label: const Text(
                       "Create Event",
