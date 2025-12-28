@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Screens/manager_bottom.dart';
+import 'ManagerProvider.dart';
+import 'package:provider/provider.dart';
 
 class LoginProvider extends ChangeNotifier{
 
@@ -17,6 +19,7 @@ class LoginProvider extends ChangeNotifier{
     required String password,
     required BuildContext context,
   }) async {
+
     // 1. Start Loading
     otpLoader = true;
     notifyListeners();
@@ -41,6 +44,11 @@ class LoginProvider extends ChangeNotifier{
 
         await prefs.setString('adminName', adminName);
         await prefs.setString('adminName', adminName);
+
+        final managerProvider =
+        Provider.of<ManagerProvider>(context, listen: false);
+        managerProvider.setTabIndex(0);
+        managerProvider.fetchEvents();
 
         callNextReplacement(ManagerBottom(adminID: adminID,adminName: adminName,), context);
         ScaffoldMessenger.of(context).showSnackBar(

@@ -80,9 +80,11 @@ class ManagerHomeScreen extends StatelessWidget {
           Expanded(
             child: Consumer<ManagerProvider>(
               builder: (context, provider, _) {
+                print(provider.upcomingEventsList.length.toString()+' FRJFNRJKF ');
+                print(provider.selectedTabIndex .toString()+' FRJFNRJKF ');
                 final events = provider.selectedTabIndex == 0
-                    ? provider.upcomingEvents
-                    : provider.runningEvents;
+                    ? provider.upcomingEventsList
+                    : provider.runningEventsList;
 
                 if (events.isEmpty) {
                   return const Center(
@@ -99,9 +101,9 @@ class ManagerHomeScreen extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final event = events[index];
                     return _buildEventCard(
-                      date: event['date']!,
-                      title: event['title']!,
-                      boys: event['boys']!,
+                      date: event.eventDate,
+                      title: event.eventName,
+                      boys: event.boysRequired.toString(),
                     );
                   },
                 );
@@ -125,7 +127,10 @@ class ManagerHomeScreen extends StatelessWidget {
           _tabItem(
             title: "Upcoming Events",
             isSelected: provider.selectedTabIndex == 0,
-            onTap: () => provider.setTabIndex(0),
+            onTap: () {
+              provider.fetchEvents();
+              provider.setTabIndex(0);
+            }
           ),
           _tabItem(
             title: "Running Events",

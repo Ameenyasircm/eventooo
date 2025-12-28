@@ -2,6 +2,8 @@ import 'package:evento/Manager/Providers/ManagerProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'map_pick_screen.dart';
+
 class CreateEventScreen extends StatelessWidget {
    CreateEventScreen({Key? key}) : super(key: key);
   final formKey = GlobalKey<FormState>();
@@ -85,11 +87,21 @@ class CreateEventScreen extends StatelessWidget {
                       Icons.map_outlined,
                     ).copyWith(
                       suffixIcon: IconButton(
-                        icon: const Icon(
-                          Icons.my_location,
-                          color: primaryOrange,
-                        ),
-                        onPressed: () {},
+                        icon: const Icon(Icons.my_location, color: Color(0xffE65100)),
+                        onPressed: () async {
+                          final result = await Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => const MapPickerScreen()),
+                          );
+
+                          if (result != null) {
+                            provider.setLocation(
+                              address: result['address'],
+                              lat: result['lat'],
+                              lng: result['lng'],
+                            );
+                          }
+                        },
                       ),
                     ),
                     validator: (v) => v!.isEmpty ? "Required field" : null,
@@ -123,7 +135,7 @@ class CreateEventScreen extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: (){
                         if (!formKey.currentState!.validate()) return;
-                        provider.submit(context);
+                        provider.createEventFun(context);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: primaryOrange,
