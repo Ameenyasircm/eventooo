@@ -1,4 +1,5 @@
 import 'package:evento/Manager/Providers/LoginProvider.dart';
+import 'package:evento/Manager/Providers/ManagerProvider.dart';
 import 'package:evento/Manager/Screens/splashScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -17,7 +18,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-        ChangeNotifierProvider(create: (context) => LoginProvider(),),],
+        ChangeNotifierProvider(create: (context) => LoginProvider(),),
+        ChangeNotifierProvider(create: (context) => ManagerProvider(),),
+        ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Evento',

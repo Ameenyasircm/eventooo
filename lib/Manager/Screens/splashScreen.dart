@@ -6,7 +6,6 @@ import '../../Constants/colors.dart';
 import '../../Constants/my_functions.dart';
 import '../Providers/LoginProvider.dart';
 import 'LoginScreen.dart';
-import 'package:provider/provider.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -96,18 +95,18 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                   // Make sure your logo filename matches exactly
                   Image.asset(
                     'assets/Logo.png',
-                    width: MediaQuery.of(context).size.width * 2,
+                    width: MediaQuery.of(context).size.width * 0.8,
                   ),
                   const SizedBox(height: 24),
-                  const Text(
-                    "CATERING CREW MANAGEMENT",
-                    style: TextStyle(
-                      fontSize: 14,
-                      letterSpacing: 1.5,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF1A237E), // Navy Blue
-                    ),
-                  ),
+                  // const Text(
+                  //   "CATERING CREW MANAGEMENT",
+                  //   style: TextStyle(
+                  //     fontSize: 10,
+                  //     letterSpacing: 1.5,
+                  //     fontWeight: FontWeight.bold,
+                  //     color: Color(0xFF1A237E), // Navy Blue
+                  //   ),
+                  // ),
                 ],
               ),
             ),
