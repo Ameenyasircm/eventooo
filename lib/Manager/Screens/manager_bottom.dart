@@ -7,9 +7,9 @@ import 'manager_menu_screen.dart';
 import 'package:provider/provider.dart';
 
 class ManagerBottom extends StatefulWidget {
-  String adminID,adminName;
+  String adminID,adminName,adminPhone;
   int initialIndex=0;
-  ManagerBottom({Key? key,required this.adminID,required this.adminName}) : super(key: key);
+  ManagerBottom({Key? key,required this.adminID,required this.adminName,required this.adminPhone}) : super(key: key);
 
   @override
   State<ManagerBottom> createState() => _ManagerBottomState();
@@ -20,39 +20,25 @@ class _ManagerBottomState extends State<ManagerBottom> {
   late int _currentPage;
   final ScrollController _scrollController = ScrollController();
 
+  late List<Widget> _screens;
+
   @override
   void initState() {
     super.initState();
 
-    // Start with 0 temporarily
     _currentPage = 0;
 
-
-    // Wait for next frame, then update to actual initial index
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (widget.initialIndex != 0) {
-        Future.delayed(Duration(milliseconds: 100), () {
-          setState(() {
-            _currentPage = widget.initialIndex;
-          });
-
-          // Trigger data fetch for the initial page
-          if (widget.initialIndex == 0) {
-          }
-          if (widget.initialIndex == 1) {
-          }
-          if (widget.initialIndex == 2) {
-          }
-        });
-      }
-    });
+    _screens = [
+      ManagerHomeScreen(),
+      BoysListScreen(),
+      ManagerMenuScreen(
+        managerId: widget.adminID,
+        managerName: widget.adminName,
+        phoneNumber: widget.adminPhone,
+      ),
+    ];
   }
 
-  final List<Widget> _screens = [
-    ManagerHomeScreen(),
-    BoysListScreen(),
-    ManagerMenuScreen(),
-  ];
 
   void _onTabSelected(int index) {
     setState(() {

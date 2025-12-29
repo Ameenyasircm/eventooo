@@ -50,7 +50,7 @@ class LoginProvider extends ChangeNotifier{
         managerProvider.setTabIndex(0);
         managerProvider.fetchEvents();
 
-        callNextReplacement(ManagerBottom(adminID: adminID,adminName: adminName,), context);
+        callNextReplacement(ManagerBottom(adminID: adminID,adminName: adminName,adminPhone: phone,), context);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Login Successful"), backgroundColor: Colors.green),
         );
