@@ -1,3 +1,5 @@
+import 'package:evento/Boys/Providers/boys_provider.dart';
+import 'package:evento/Boys/Providers/boys_provider.dart';
 import 'package:evento/Constants/my_functions.dart';
 import 'package:evento/Manager/Providers/ManagerProvider.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +15,7 @@ class ManagerHomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ManagerProvider managerProvider = Provider.of<ManagerProvider>(context);
+    BoysProvider boysProvider = Provider.of<BoysProvider>(context);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -36,6 +39,7 @@ class ManagerHomeScreen extends StatelessWidget {
                 Expanded(
                   child: OutlinedButton.icon(
                     onPressed: () {
+                      boysProvider.clearBoyForm();
                       callNext(RegisterBoyScreen(), context);
                     },
                     icon: const Icon(Icons.add, color: Color(0xffE65100)),
@@ -56,6 +60,7 @@ class ManagerHomeScreen extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton.icon(
                     onPressed: () {
+                      managerProvider.clearEventRegScreens();
                       callNext(CreateEventScreen(), context);
                     },
                     icon: const Icon(Icons.add, color: Colors.white),

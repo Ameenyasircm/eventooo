@@ -161,6 +161,22 @@ class BoysProvider extends ChangeNotifier{
     notifyListeners();
   }
 
+  void clearBoyForm() {
+    boyNameController.clear();
+    phoneController.clear();
+    guardianController.clear();
+    dobController.clear();
+    placeController.clear();
+    districtController.clear();
+    pinController.clear();
+    addressController.clear();
+
+    selectedBloodGroup = null;
+    dobDateTime = null;
+
+    notifyListeners();
+  }
+
 
 
 
