@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 
+import 'Boys/Providers/boys_provider.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -20,6 +22,7 @@ class MyApp extends StatelessWidget {
         providers: [
         ChangeNotifierProvider(create: (context) => LoginProvider(),),
         ChangeNotifierProvider(create: (context) => ManagerProvider(),),
+        ChangeNotifierProvider(create: (context) => BoysProvider(),),
         ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

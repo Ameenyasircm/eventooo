@@ -3,6 +3,7 @@ import 'package:evento/Manager/Providers/ManagerProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../Boys/Screens/boy_registration.dart';
 import 'create_new_event.dart';
 
 
@@ -34,7 +35,9 @@ class ManagerHomeScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: OutlinedButton.icon(
-                    onPressed: () {},
+                    onPressed: () {
+                      callNext(RegisterBoyScreen(), context);
+                    },
                     icon: const Icon(Icons.add, color: Color(0xffE65100)),
                     label: const Text(
                       "Add Boys",

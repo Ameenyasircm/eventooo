@@ -1,8 +1,10 @@
+import 'package:evento/Boys/Providers/boys_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:dot_curved_bottom_nav/dot_curved_bottom_nav.dart';
 import 'all_boys_screen.dart';
 import 'manager_home_screen.dart';
 import 'manager_menu_screen.dart';
+import 'package:provider/provider.dart';
 
 class ManagerBottom extends StatefulWidget {
   String adminID,adminName;
@@ -35,11 +37,11 @@ class _ManagerBottomState extends State<ManagerBottom> {
           });
 
           // Trigger data fetch for the initial page
+          if (widget.initialIndex == 0) {
+          }
           if (widget.initialIndex == 1) {
           }
           if (widget.initialIndex == 2) {
-          }
-          if (widget.initialIndex == 3) {
           }
         });
       }
@@ -48,9 +50,46 @@ class _ManagerBottomState extends State<ManagerBottom> {
 
   final List<Widget> _screens = [
     ManagerHomeScreen(),
-    AllBoysScreen(),
+    BoysListScreen(),
     ManagerMenuScreen(),
   ];
+
+  void _onTabSelected(int index) {
+    setState(() {
+      _currentPage = index;
+    });
+
+    // Call functions based on tab index
+    switch (index) {
+      case 0:
+        _onHomeTab();
+        break;
+      case 1:
+        _onBoysTab();
+        break;
+      case 2:
+        _onMenuTab();
+        break;
+    }
+  }
+
+  void _onHomeTab() {
+    print("Home tab clicked");
+    // Example:
+    // context.read<HomeProvider>().fetchDashboard();
+  }
+
+  void _onBoysTab() {
+    print("Boys tab clicked");
+    final boyProvider =
+    Provider.of<BoysProvider>(context, listen: false);
+    boyProvider.fetchBoys();
+  }
+
+  void _onMenuTab() {
+    print("Menu tab clicked");
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +104,7 @@ class _ManagerBottomState extends State<ManagerBottom> {
           currentIndex: _currentPage,
           onTap: (index) {
             setState(() {
+              _onTabSelected(index);
               _currentPage = index;
             });
           },
