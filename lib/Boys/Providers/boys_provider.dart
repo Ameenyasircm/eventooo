@@ -1,6 +1,10 @@
+import 'package:evento/Constants/my_functions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../Screens/pending_admin_approval.dart';
 
 class BoysProvider extends ChangeNotifier{
 
@@ -41,9 +45,9 @@ class BoysProvider extends ChangeNotifier{
   }
 
 
-  Future<void> registerNewBoyFun(BuildContext context) async {
+  Future<void> registerNewBoyFun(BuildContext context, String from) async {
     try {
-      // DOB validation
+      // 🔒 DOB validation
       if (dobDateTime == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Please select date of birth")),
@@ -53,7 +57,7 @@ class BoysProvider extends ChangeNotifier{
 
       final phone = phoneController.text.trim();
 
-      // Phone length validation (extra safety)
+      // 🔒 Phone validation
       if (phone.length != 10) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Enter valid 10 digit phone number")),
@@ -74,13 +78,13 @@ class BoysProvider extends ChangeNotifier{
             content: Text("This phone number is already registered"),
           ),
         );
-        return; // ⛔ STOP HERE
+        return;
       }
 
       /// ✅ STEP 2: REGISTER BOY
       final boyId = "BOY${DateTime.now().millisecondsSinceEpoch}";
 
-      await db.collection("BOYS").doc(boyId).set({
+      Map<String, dynamic> map = {
         "BOY_ID": boyId,
         "NAME": boyNameController.text.trim(),
         "PHONE": phone,
@@ -92,20 +96,45 @@ class BoysProvider extends ChangeNotifier{
         "DISTRICT": districtController.text.trim(),
         "PIN_CODE": pinController.text.trim(),
         "ADDRESS": addressController.text.trim(),
-        "STATUS": "ACTIVE",
         "CREATED_TIME": FieldValue.serverTimestamp(),
-      });
+      };
 
+      if (from == 'MANAGER') {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        String? adminName = prefs.getString('adminName');
+        String? adminID = prefs.getString('adminID');
+
+        map.addAll({
+          "STATUS": "APPROVED",
+          "DIRECT_APPROVAL_STATUS": "YES",
+          "APPROVED_BY": adminName,
+          "APPROVED_BY_ID": adminID,
+          "APPROVED_TIME": FieldValue.serverTimestamp(),
+        });
+      } else {
+        map.addAll({
+          "STATUS": "PENDING",
+          "DIRECT_APPROVAL_STATUS": "NO",
+        });
+      }
+      await db.collection("BOYS").doc(boyId).set(map);
       Navigator.pop(context);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Center(child: Text("Boy registered successfully")),
-        ),
-      );
-
-      fetchBoys();
-
+      if(from=='MANAGER'){
+        fetchBoys(); // refresh list
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Center(child: Text("Boy registered successfully")),
+          ),
+        );
+      }else{
+        callNextReplacement(PendingAdminApproval(), context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Center(child: Text("Registered successfully,Pending Admin Approval")),
+          ),
+        );
+      }
     } catch (e) {
       debugPrint("Register Boy Error: $e");
       ScaffoldMessenger.of(context).showSnackBar(

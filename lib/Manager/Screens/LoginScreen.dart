@@ -1,6 +1,10 @@
+import 'package:evento/Constants/my_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../Boys/Providers/boys_provider.dart';
+import '../../Boys/Screens/boy_registration.dart';
 import '../Providers/LoginProvider.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class Loginscreen extends StatefulWidget {
   const Loginscreen({Key? key}) : super(key: key);
@@ -14,19 +18,29 @@ class _LoginscreenState extends State<Loginscreen> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
-
+  String? packageName;
   @override
   void dispose() {
     _phoneController.dispose();
     _passwordController.dispose();
+    getPackageName();
     super.dispose();
   }
+
+  Future<void> getPackageName() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      packageName = packageInfo.packageName;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     // Listening to the provider for the loading state
     final loginProvider = Provider.of<LoginProvider>(context);
+    BoysProvider boysProvider = Provider.of<BoysProvider>(context);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -69,8 +83,12 @@ class _LoginscreenState extends State<Loginscreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  packageName=='com.evento.manager'?
+                  Text(
                     "Manager Login",
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ):Text(
+                    "Boys Login",
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   const Text(
@@ -137,10 +155,32 @@ class _LoginscreenState extends State<Loginscreen> {
                   ),
 
                   const SizedBox(height: 20),
-                  const Center(
-                    child: Text(
-                      "Contact Admin for account issues",
-                      style: TextStyle(color: Colors.grey, fontSize: 12),
+                   Visibility(visible:  packageName=='com.evento.manager',
+                     child: Center(
+                      child: Text(
+                        "Contact Admin for account issues",
+                        style: TextStyle(color: Colors.grey, fontSize: 12),
+                      ),
+                                       ),
+                   ),
+                  Visibility(
+                    visible: packageName != 'com.evento.manager',
+                    child: Center(
+                      child: InkWell(
+                        onTap: (){
+                          boysProvider.clearBoyForm();
+                          callNext(RegisterBoyScreen(registeredBy: 'BOY',), context);
+                        },
+                        child: Text(
+                          "Register New Boy",
+                          style: TextStyle(
+                            color: Colors.blue,          // 🔵 blue color
+                            fontSize: 15,                // ⬆️ little bigger
+                            fontWeight: FontWeight.w500, // slightly bold
+                            decoration: TextDecoration.underline, // ➖ underline
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ],

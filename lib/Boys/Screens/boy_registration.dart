@@ -1,10 +1,10 @@
 import 'package:evento/Boys/Providers/boys_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:evento/Manager/Providers/ManagerProvider.dart';
 
 class RegisterBoyScreen extends StatelessWidget {
-  RegisterBoyScreen({Key? key}) : super(key: key);
+  String registeredBy;
+  RegisterBoyScreen({Key? key,required this.registeredBy}) : super(key: key);
 
   final formKey = GlobalKey<FormState>();
 
@@ -145,7 +145,7 @@ class RegisterBoyScreen extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         if (!formKey.currentState!.validate()) return;
-                        provider.registerNewBoyFun(context);
+                        provider.registerNewBoyFun(context,registeredBy);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: primaryOrange,
@@ -154,9 +154,9 @@ class RegisterBoyScreen extends StatelessWidget {
                         ),
                       ),
                       child: const Text(
-                        "Register Boy",
+                        "Submit",
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 17,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),

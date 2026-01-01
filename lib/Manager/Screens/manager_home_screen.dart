@@ -40,7 +40,7 @@ class ManagerHomeScreen extends StatelessWidget {
                   child: OutlinedButton.icon(
                     onPressed: () {
                       boysProvider.clearBoyForm();
-                      callNext(RegisterBoyScreen(), context);
+                      callNext(RegisterBoyScreen(registeredBy: 'MANAGER',), context);
                     },
                     icon: const Icon(Icons.add, color: Color(0xffE65100)),
                     label: const Text(
