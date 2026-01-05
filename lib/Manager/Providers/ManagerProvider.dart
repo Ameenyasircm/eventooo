@@ -171,4 +171,32 @@ class ManagerProvider extends ChangeNotifier{
   }
 
 
+  Future<void> updateBoyPassword(BuildContext context, String docId, String newPassword) async {
+    try {
+
+      await db.collection("ADMINS").doc(docId).set({
+        "PASSWORD": newPassword, // Stored as a string
+        "PASSWORD_UPDATED_TIME": FieldValue.serverTimestamp()
+      },SetOptions(merge: true));
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Center(child: Text("Password updated successfully!")),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      debugPrint("Update Password Error: $e");
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Failed to update password. Please try again.")),
+        );
+      }
+      rethrow; // Pass error back to the UI to stop loading state
+    }
+  }
+
+
 }

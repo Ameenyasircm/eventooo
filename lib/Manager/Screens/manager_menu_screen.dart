@@ -1,4 +1,6 @@
+import 'package:evento/Constants/my_functions.dart';
 import 'package:evento/Manager/Screens/LoginScreen.dart';
+import 'package:evento/Manager/Screens/update_password_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -125,17 +127,19 @@ class ManagerMenuScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  _menuTile(
-                    icon: Icons.person_outline_rounded,
-                    title: "Edit Profile",
-                    subtitle: "Manage your personal information",
-                    onTap: () {},
-                  ),
+                  // _menuTile(
+                  //   icon: Icons.person_outline_rounded,
+                  //   title: "Edit Profile",
+                  //   subtitle: "Manage your personal information",
+                  //   onTap: () {},
+                  // ),
                   _menuTile(
                     icon: Icons.lock_open_rounded,
                     title: "Security",
                     subtitle: "Change password & settings",
-                    onTap: () {},
+                    onTap: () {
+                      callNext(ChangePasswordScreen(managerID: managerId,), context);
+                    },
                   ),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 24, vertical: 10),
