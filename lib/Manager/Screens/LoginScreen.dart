@@ -23,8 +23,15 @@ class _LoginscreenState extends State<Loginscreen> {
   void dispose() {
     _phoneController.dispose();
     _passwordController.dispose();
-    getPackageName();
+
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    getPackageName();
+    // TODO: implement initState
+    super.initState();
   }
 
   Future<void> getPackageName() async {
