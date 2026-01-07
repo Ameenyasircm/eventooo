@@ -2,7 +2,12 @@ import 'package:evento/Boys/Screens/home/widgets/work_card.dart';
 import 'package:evento/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/utils/alert_utils.dart';
 import '../../../../core/utils/date_time_parser.dart';
+import '../../../../core/utils/dialog_utils.dart';
+import '../../../../core/utils/loader/loader.dart';
+import '../../../../core/utils/snackBarNotifications/snackBar_notifications.dart';
+import '../../../../core/utils/text_utils.dart';
 import '../../../../services/event_service.dart';
 
 class WorkTabs extends StatelessWidget {
@@ -29,13 +34,14 @@ class WorkTabs extends StatelessWidget {
 }
 
 class AvailableWorksTab extends StatelessWidget {
-   AvailableWorksTab({super.key});
+  final String userId;
+   AvailableWorksTab({super.key,required this.userId});
   final EventService _service = EventService();
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
         future: _service.fetchUpcomingEvents(),
-        builder: (context, snapshot) {
+        builder: (context4, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
@@ -52,14 +58,46 @@ class AvailableWorksTab extends StatelessWidget {
           itemCount: events.length,
           padding: const EdgeInsets.all(16),
           shrinkWrap: true,
-          itemBuilder: (context,index){
+          itemBuilder: (context7,index){
             final event = events[index];
-            return  WorkCard(
-              date: formatDate(event.eventDateTs),
-              time: formatTime(event.eventDateTs),
-              title: event.eventName,
-              code: 'GKH',
-              status: 'No Vacancy',
+            return  InkWell(
+              onTap: () async {
+                final confirmed = await showConfirmDialog(
+                  context: context,
+                  title: 'Take this work?',
+                  message: 'Do you want to take ${event.eventName}?',
+                  confirmText: 'Confirm',
+                );
+
+                if (!confirmed) return;
+
+                showLoader(context);
+
+                try {
+                  await _service.takeWork(event.eventId, userId);
+
+                  hideLoader(context);
+
+                  await showSuccessAlert(
+                    context: context,
+                    title: 'Success',
+                    message: 'Work confirmed successfully',
+                  );
+
+                } catch (e) {
+                  hideLoader(context);
+                  NotificationSnack.showError(e.toString());
+
+                }
+              },
+
+              child: WorkCard(
+                date: formatDate(event.eventDateTs),
+                time: formatTime(event.eventDateTs),
+                title: event.eventName,
+                code: getInitials(event.eventName),
+                status: 'Available',
+              ),
             );
           },
         );

@@ -22,7 +22,7 @@ class BoyHome extends StatelessWidget {
               Expanded(
                 child: TabBarView(
                   children: [
-                    AvailableWorksTab(),
+                    AvailableWorksTab(userId: boyID,),
                     const ConfirmedWorksTab(),
                   ],
                 ),

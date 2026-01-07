@@ -1,3 +1,4 @@
+import 'package:evento/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_spacing.dart';
@@ -36,7 +37,9 @@ class WorkCard extends StatelessWidget {
               backgroundColor: Colors.red,
               child: Text(
                 code,
-                style: const TextStyle(color: Colors.white),
+                style:AppTypography.caption.copyWith(
+                  color: Colors.white
+                ),
               ),
             ),
             AppSpacing.w12,
@@ -46,22 +49,24 @@ class WorkCard extends StatelessWidget {
                 children: [
                   Text(
                     '$date   $time',
-                    style: const TextStyle(
-                        fontSize: 12, color: Colors.grey),
+                    style:AppTypography.caption.copyWith(
+                        color: Colors.grey
+                    ),
                   ),
                   AppSpacing.h4,
                   Text(
                     title,
-                    style: const TextStyle(
-                        fontSize: 14, fontWeight: FontWeight.w600),
+                    style:AppTypography.body2.copyWith(
+                      fontWeight: FontWeight.w600
+                    )
                   ),
                   AppSpacing.h4,
                   Text(
                     status,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: confirmed ? Colors.green : Colors.red,
-                    ),
+                    style:AppTypography.caption.copyWith(
+                      color: Colors.green,
+                    )
+
                   ),
                 ],
               ),
