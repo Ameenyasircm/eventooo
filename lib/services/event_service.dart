@@ -25,25 +25,49 @@ class EventService {
   }
 
   /// Fetch upcoming events
-  Future<List<EventModel>> fetchUpcomingEvents() async {
+  Future<List<EventModel>> fetchUpcomingEvents(String userId) async {
     try {
+      // 1️⃣ Get today's UTC start
       final nowUtc = DateTime.now().toUtc();
       final startOfTodayUtc =
       DateTime.utc(nowUtc.year, nowUtc.month, nowUtc.day);
 
-      final snapshot = await _db
+      // 2️⃣ Fetch upcoming events
+      final eventsSnapshot = await _db
           .collection('EVENTS')
-          .where('EVENT_DATE_TS', isGreaterThanOrEqualTo:
-        Timestamp.fromDate(startOfTodayUtc),).orderBy('EVENT_DATE_TS').get();
+          .where(
+        'EVENT_DATE_TS',
+        isGreaterThanOrEqualTo:
+        Timestamp.fromDate(startOfTodayUtc),
+      )
+          .orderBy('EVENT_DATE_TS')
+          .get();
 
-
-      return snapshot.docs
+      final events = eventsSnapshot.docs
           .map((doc) => EventModel.fromMap(doc.data()))
           .toList();
+
+      // 3️⃣ Fetch confirmed works of this boy
+      final confirmedSnapshot = await _db
+          .collection('BOYS')
+          .doc(userId)
+          .collection('CONFIRMED_WORKS')
+          .get();
+
+      final confirmedEventIds =
+      confirmedSnapshot.docs.map((d) => d.id).toSet();
+
+      // 4️⃣ Remove already confirmed events
+      events.removeWhere(
+            (event) => confirmedEventIds.contains(event.eventId),
+      );
+
+      return events;
     } on FirebaseException catch (e) {
       throw Exception('Firestore error: ${e.message}');
     }
   }
+
 
   /// Take a work
   Future<void> takeWork(String eventId, String userId) async {
@@ -88,13 +112,32 @@ class EventService {
       // 5️⃣ Copy event data to CONFIRMED_WORKS
       transaction.set(userWorkRef, {
         ...data,
-        'EVENT_ID': eventId,
         'STATUS': 'CONFIRMED',
         'BOYS_TAKEN': updatedTaken, // ✅ correct value
         'CONFIRMED_AT': FieldValue.serverTimestamp(),
       });
     });
   }
+
+  Future<List<EventModel>> fetchConfirmedWorks(String userId) async {
+    try {
+      final snapshot = await _db
+          .collection('BOYS')
+          .doc(userId)
+          .collection('CONFIRMED_WORKS')
+          .orderBy('CONFIRMED_AT', descending: true)
+          .get();
+
+      return snapshot.docs
+          .map((doc) => EventModel.fromMap(doc.data()))
+          .toList();
+    } on FirebaseException catch (e) {
+      throw Exception('Firestore error: ${e.message}');
+    } catch (e) {
+      throw Exception('Unexpected error: $e');
+    }
+  }
+
 
 
 

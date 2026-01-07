@@ -24,7 +24,7 @@ class _BoyBottomNavBarState extends State<BoyBottomNavBar> {
     _currentPage = 0;
 
     _screens = [
-      BoyHome(boyName: '', boyID: '', boyPhone: ''),
+      BoyHome(boyName: '', boyID: 'BOY1767671079465', boyPhone: ''),
       MenuScreen(),
     ];
   }

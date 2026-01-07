@@ -10,6 +10,7 @@ class BoyHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -23,7 +24,7 @@ class BoyHome extends StatelessWidget {
                 child: TabBarView(
                   children: [
                     AvailableWorksTab(userId: boyID,),
-                    const ConfirmedWorksTab(),
+                     ConfirmedWorksTab(userId: boyID),
                   ],
                 ),
               ),

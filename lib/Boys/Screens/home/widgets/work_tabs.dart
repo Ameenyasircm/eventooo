@@ -40,8 +40,9 @@ class AvailableWorksTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: _service.fetchUpcomingEvents(),
+        future: _service.fetchUpcomingEvents(userId),
         builder: (context4, snapshot) {
+
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
@@ -59,9 +60,11 @@ class AvailableWorksTab extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           shrinkWrap: true,
           itemBuilder: (context7,index){
+
             final event = events[index];
             return  InkWell(
               onTap: () async {
+
                 final confirmed = await showConfirmDialog(
                   context: context,
                   title: 'Take this work?',
@@ -107,22 +110,76 @@ class AvailableWorksTab extends StatelessWidget {
 }
 
 class ConfirmedWorksTab extends StatelessWidget {
-  const ConfirmedWorksTab({super.key});
-
+  final String userId;
+   ConfirmedWorksTab({super.key,required this.userId});
+  final EventService _service = EventService();
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: const [
-        WorkCard(
-          date: '03/01/2026',
-          time: '03:00 PM',
-          title: 'Greens. Calicut. 3pm (Mubaris)',
-          code: 'BC',
-          status: 'Confirmed',
-          confirmed: true,
-        ),
-      ],
+    return  FutureBuilder(
+        future: _service.fetchConfirmedWorks(userId),
+        builder: (context4, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text(snapshot.error.toString()));
+          }
+
+          final events = snapshot.data ?? [];
+
+          if (events.isEmpty) {
+            return  Center(child: Text('No confirmed events found',style: AppTypography.body2,));
+          }
+        return ListView.builder(
+          itemCount: events.length,
+          padding: const EdgeInsets.all(16),
+          shrinkWrap: true,
+          itemBuilder: (context7,index){
+
+            final event = events[index];
+            return  InkWell(
+              onTap: () async {
+
+                final confirmed = await showConfirmDialog(
+                  context: context,
+                  title: 'Take this work?',
+                  message: 'Do you want to take ${event.eventName}?',
+                  confirmText: 'Confirm',
+                );
+
+                if (!confirmed) return;
+
+                showLoader(context);
+
+                try {
+                  await _service.takeWork(event.eventId, userId);
+
+                  hideLoader(context);
+
+                  await showSuccessAlert(
+                    context: context,
+                    title: 'Success',
+                    message: 'Work confirmed successfully',
+                  );
+
+                } catch (e) {
+                  hideLoader(context);
+                  NotificationSnack.showError(e.toString());
+
+                }
+              },
+
+              child: WorkCard(
+                date: formatDate(event.eventDateTs),
+                time: formatTime(event.eventDateTs),
+                title: event.eventName,
+                code: getInitials(event.eventName),
+                status: 'confirmed',
+              ),
+            );
+          },
+        );
+      }
     );
   }
 }

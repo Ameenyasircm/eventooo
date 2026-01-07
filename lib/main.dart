@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             useMaterial3: true,
           ),
-          home: const BoyBottomNavBar(boyName: '', boyID: '', boyPhone: '',),
+          home: const BoyBottomNavBar(boyName: '', boyID: 'BOY1767671079465', boyPhone: '',),
           // home: const SplashScreen(),
         ),
       ),
