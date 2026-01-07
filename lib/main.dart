@@ -3,9 +3,11 @@ import 'package:evento/Manager/Providers/ManagerProvider.dart';
 import 'package:evento/Manager/Screens/splashScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'Boys/Providers/boys_provider.dart';
+import 'Boys/Screens/navbar/boy_bottomNav.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,20 +20,29 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-        providers: [
-        ChangeNotifierProvider(create: (context) => LoginProvider(),),
-        ChangeNotifierProvider(create: (context) => ManagerProvider(),),
-        ChangeNotifierProvider(create: (context) => BoysProvider(),),
-        ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Evento',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    return ScreenUtilInit(
+      minTextAdapt: false,
+      designSize: const Size(360, 813),
+      child: MultiProvider(
+          providers: [
+          ChangeNotifierProvider(create: (context) => LoginProvider(),),
+          ChangeNotifierProvider(create: (context) => ManagerProvider(),),
+          ChangeNotifierProvider(create: (context) => BoysProvider(),),
+          ],
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Evento',
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            useMaterial3: true,
+          ),
+          home: const BoyBottomNavBar(boyName: '', boyID: '', boyPhone: '',),
+          // home: const SplashScreen(),
         ),
-        home: const SplashScreen(),
       ),
     );
   }

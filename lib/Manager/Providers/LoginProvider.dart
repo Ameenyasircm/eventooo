@@ -5,7 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../Boys/Screens/boy_home.dart';
+import '../../Boys/Screens/navbar/boy_bottomNav.dart';
+import '../../Boys/Screens/home/boy_home.dart';
 import '../Screens/manager_bottom.dart';
 import 'ManagerProvider.dart';
 import 'package:provider/provider.dart';
@@ -103,7 +104,7 @@ class LoginProvider extends ChangeNotifier{
           if(dataMap['STATUS']=='APPROVED'){
             callNextReplacement(PendingAdminApproval(), context);
           }else{
-            callNextReplacement(BoyHome(boyID: adminID, boyName: adminName, boyPhone: phone,), context);
+            callNextReplacement(BoyBottomNavBar(boyID: adminID, boyName: adminName, boyPhone: phone,), context);
           }
 
         } else {
