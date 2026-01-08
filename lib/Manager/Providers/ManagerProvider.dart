@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../Constants/appConfig.dart';
+import '../Models/BoysRequestModel.dart';
 import '../Models/event_model.dart';
 import '../Screens/LoginScreen.dart';
 
@@ -247,5 +248,68 @@ class ManagerProvider extends ChangeNotifier{
   }
 
 
+  List<BoyRequestModel> pendingBoysList = [];
 
+  /// 🔹 FETCH PENDING BOYS
+  Future<void> fetchPendingBoysRequests() async {
+    pendingBoysList.clear();
+    isLoading = true;
+    notifyListeners();
+
+    try {
+      final snapshot = await db
+          .collection('BOYS')
+          .where('STATUS', isEqualTo: 'PENDING')
+          // .orderBy('CREATED_TIME', descending: true)
+          .get();
+
+      for (var doc in snapshot.docs) {
+        pendingBoysList.add(
+          BoyRequestModel.fromDoc(doc.data(), doc.id),
+        );
+      }
+    } catch (e) {
+      debugPrint("Fetch Boys Request Error: $e");
+    }
+
+    isLoading = false;
+    notifyListeners();
+  }
+
+  /// ✅ APPROVE
+  Future<void> approveBoy(String docId) async {
+    await db.collection('BOYS').doc(docId).update({
+      'STATUS': 'APPROVED',
+      'APPROVED_TIME': FieldValue.serverTimestamp(),
+    });
+
+    pendingBoysList.removeWhere((e) => e.docId == docId);
+    notifyListeners();
+  }
+
+  /// ❌ REJECT
+  Future<void> rejectBoy(String docId) async {
+    await db.collection('BOYS').doc(docId).update({
+      'STATUS': 'REJECTED',
+      'REJECTED_TIME': FieldValue.serverTimestamp(),
+    });
+
+    pendingBoysList.removeWhere((e) => e.docId == docId);
+    notifyListeners();
+  }
+
+
+  Future<void> updateBoyStatus(String docId, String status) async {
+    await FirebaseFirestore.instance
+        .collection('BOYS')
+        .doc(docId)
+        .update({
+      'STATUS': status,
+      'APPROVED_TIME': FieldValue.serverTimestamp(),
+    });
+
+    pendingBoysList.removeWhere((e) => e.docId == docId);
+    notifyListeners();
+  }
 }
+

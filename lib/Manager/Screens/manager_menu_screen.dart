@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 import '../Providers/ManagerProvider.dart';
+import 'boys_requests.dart';
 
 class ManagerMenuScreen extends StatelessWidget {
   final String managerName;
@@ -21,6 +22,8 @@ class ManagerMenuScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ManagerProvider managerProvider = Provider.of<ManagerProvider>(context);
+
     return Scaffold(
       backgroundColor: const Color(0xffF8F9FD),
       body: Column(
@@ -95,7 +98,10 @@ class ManagerMenuScreen extends StatelessWidget {
                   icon: Icons.group_add_rounded,
                   title: "Boys Request",
                   subtitle: "Pending & approved requests",
-                  onTap: () {},
+                  onTap: () {
+                    managerProvider.fetchPendingBoysRequests();
+                    callNext(BoysRequestScreen(), context);
+                  },
                 ),
                 _menuTile(
                   icon: Icons.task_alt_rounded,

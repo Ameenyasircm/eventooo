@@ -1,6 +1,6 @@
 import 'package:evento/Manager/Providers/ManagerProvider.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+  import 'package:provider/provider.dart';
 
 import '../../Constants/appConfig.dart';
 import 'map_pick_screen.dart';
