@@ -2,6 +2,7 @@ import 'package:evento/Manager/Providers/ManagerProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../Constants/appConfig.dart';
 import 'map_pick_screen.dart';
 
 class CreateEventScreen extends StatelessWidget {
@@ -107,6 +108,42 @@ class CreateEventScreen extends StatelessWidget {
                     validator: (v) => v!.isEmpty ? "Required field" : null,
                   ),
 
+                  const SizedBox(height: 15),
+                  _label("Publish Event"),
+
+                Wrap(
+                  spacing: 12,
+                  children: [
+                    ChoiceChip(
+                      label: const Text("Publish Now"),
+                      selected: provider.publishType == PublishType.now,
+                      selectedColor: const Color(0xffE65100),
+                      backgroundColor: Colors.grey.shade200,
+                      labelStyle: TextStyle(
+                        color: provider.publishType == PublishType.now
+                            ? Colors.white
+                            : Colors.black87,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      onSelected: (_) =>
+                          provider.changePublishType(PublishType.now),
+                    ),
+                    ChoiceChip(
+                      label: const Text("Publish Later"),
+                      selected: provider.publishType == PublishType.later,
+                      selectedColor: const Color(0xffE65100),
+                      backgroundColor: Colors.grey.shade200,
+                      labelStyle: TextStyle(
+                        color: provider.publishType == PublishType.later
+                            ? Colors.white
+                            : Colors.black87,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      onSelected: (_) =>
+                          provider.changePublishType(PublishType.later),
+                    ),
+                  ],
+                ),
                   const SizedBox(height: 15),
 
                   _label("Number of Boys Required"),

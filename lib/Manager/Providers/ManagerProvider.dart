@@ -3,8 +3,10 @@ import 'package:intl/intl.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../Constants/appConfig.dart';
 import '../Models/event_model.dart';
+import '../Screens/LoginScreen.dart';
 
 class ManagerProvider extends ChangeNotifier{
 
@@ -87,6 +89,14 @@ class ManagerProvider extends ChangeNotifier{
     notifyListeners();
   }
 
+
+  PublishType publishType = PublishType.now;
+
+  void changePublishType(PublishType type) {
+    publishType = type;
+    notifyListeners();
+  }
+
   Future<void> createEventFun(BuildContext context) async {
 
     if (eventDateTime == null) {
@@ -121,9 +131,10 @@ class ManagerProvider extends ChangeNotifier{
         "LONGITUDE": longitude,
         "BOYS_REQUIRED": int.parse(boysController.text),
         "DESCRIPTION": descController.text.trim(),
-        "EVENT_STATUS": "UPCOMING",
         "STATUS": "CREATED",
         "CREATED_TIME": FieldValue.serverTimestamp(),
+        "STATUS": publishType == PublishType.now ? "PUBLISHED" : "DRAFT",
+        "EVENT_STATUS": publishType == PublishType.now ? "UPCOMING" : "NOT_PUBLISHED",
       });
 
       Navigator.pop(context);
@@ -131,7 +142,7 @@ class ManagerProvider extends ChangeNotifier{
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Event created successfully")),
       );
-      fetchEvents();
+      fetchUpcomingEvents();
     } catch (e) {
       debugPrint("Create Event Error: $e");
       ScaffoldMessenger.of(context).showSnackBar(
@@ -146,14 +157,14 @@ class ManagerProvider extends ChangeNotifier{
   List<EventModel> runningEventsList = [];
 
   /// 🔥 FETCH EVENTS
-  Future<void> fetchEvents() async {
+  Future<void> fetchUpcomingEvents() async {
     upcomingEventsList.clear();
     isLoading = true;
     notifyListeners();
 
     try {
       final snapshot = await db
-          .collection('EVENTS').where('STATUS',isEqualTo: 'CREATED')
+          .collection('EVENTS').where('STATUS',isEqualTo: 'DRAFT')
           // .orderBy('EVENT_DATE_TS', descending: false)
           .get();
 
@@ -169,6 +180,30 @@ class ManagerProvider extends ChangeNotifier{
     isLoading = false;
     notifyListeners();
   }
+
+  Future<void> fetchRunningEvents() async {
+    runningEventsList.clear();
+    isLoading = true;
+    notifyListeners();
+
+    try {
+      final snapshot = await db
+          .collection('EVENTS').where('STATUS',isEqualTo: 'PUBLISHED')
+      // .orderBy('EVENT_DATE_TS', descending: false)
+          .get();
+
+
+      for (var doc in snapshot.docs) {
+        runningEventsList.add(EventModel.fromMap(doc.data()));
+      }
+    } catch (e) {
+      debugPrint("Fetch Events Error: $e");
+    }
+
+    isLoading = false;
+    notifyListeners();
+  }
+
 
 
   Future<void> updateBoyPassword(BuildContext context, String docId, String newPassword) async {
@@ -197,6 +232,20 @@ class ManagerProvider extends ChangeNotifier{
       rethrow; // Pass error back to the UI to stop loading state
     }
   }
+
+  Future<void> logout(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+
+    if (!context.mounted) return;
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => const Loginscreen()),
+          (route) => false,
+    );
+  }
+
 
 
 }

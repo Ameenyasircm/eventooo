@@ -66,7 +66,7 @@ class LoginProvider extends ChangeNotifier{
           final managerProvider =
           Provider.of<ManagerProvider>(context, listen: false);
           managerProvider.setTabIndex(0);
-          managerProvider.fetchEvents();
+          managerProvider.fetchUpcomingEvents();
 
           callNextReplacement(ManagerBottom(
             adminID: adminID, adminName: adminName, adminPhone: phone,),
@@ -104,9 +104,11 @@ class LoginProvider extends ChangeNotifier{
           Provider.of<BoysProvider>(context, listen: false);
 
           if(dataMap['STATUS']=='APPROVED'){
-            callNextReplacement(PendingAdminApproval(), context);
-          }else{
             callNextReplacement(BoyBottomNavBar(boyID: adminID, boyName: adminName, boyPhone: phone,), context);
+
+          }else{
+            callNextReplacement(PendingAdminApproval(), context);
+
           }
 
         } else {

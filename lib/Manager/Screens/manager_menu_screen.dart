@@ -3,6 +3,8 @@ import 'package:evento/Manager/Screens/LoginScreen.dart';
 import 'package:evento/Manager/Screens/update_password_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
+import '../Providers/ManagerProvider.dart';
 
 class ManagerMenuScreen extends StatelessWidget {
   final String managerName;
@@ -16,18 +18,6 @@ class ManagerMenuScreen extends StatelessWidget {
     required this.phoneNumber,
   }) : super(key: key);
 
-  Future<void> logout(BuildContext context) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
-
-    if (!context.mounted) return;
-
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (_) => const Loginscreen()),
-          (route) => false,
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,10 +25,10 @@ class ManagerMenuScreen extends StatelessWidget {
       backgroundColor: const Color(0xffF8F9FD),
       body: Column(
         children: [
-          // 🔹 HEADER SECTION WITH GRADIENT
+          // 🔹 COMPACT HEADER
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.only(top: 60, bottom: 30, left: 24, right: 24),
+            padding: const EdgeInsets.only(top: 45, bottom: 20, left: 20, right: 20),
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: [Color(0xff1A237E), Color(0xff3949AB)],
@@ -46,153 +36,104 @@ class ManagerMenuScreen extends StatelessWidget {
                 end: Alignment.bottomRight,
               ),
               borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(32),
-                bottomRight: Radius.circular(32),
+                bottomLeft: Radius.circular(26),
+                bottomRight: Radius.circular(26),
               ),
             ),
-            child: Column(
+            child: Row(
               children: [
-                const Text(
-                  "Settings",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 1.2),
+                const CircleAvatar(
+                  radius: 30,
+                  backgroundColor: Colors.white,
+                  child: Icon(Icons.person, size: 34, color: Color(0xff1A237E)),
                 ),
-                const SizedBox(height: 25),
-                Row(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white24, width: 4),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        managerName,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      child: const CircleAvatar(
-                        radius: 40,
-                        backgroundColor: Colors.white,
-                        child: Icon(Icons.person, size: 45, color: Color(0xff1A237E)),
+                      Text(
+                        phoneNumber,
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.8),
+                          fontSize: 13,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 20),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            managerName,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            phoneNumber,
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.8),
-                              fontSize: 14,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          _buildRoleBadge(),
-                        ],
-                      ),
-                    ),
-                  ],
+                      const SizedBox(height: 4),
+                      _buildRoleBadge(),
+                    ],
+                  ),
                 ),
               ],
             ),
           ),
 
-          const SizedBox(height: 30),
+          const SizedBox(height: 14),
 
-          // 🔹 MENU ITEMS
-          Expanded(
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-                    child: Text(
-                      "ACCOUNT",
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey,
-                        letterSpacing: 1.1,
-                      ),
-                    ),
-                  ),
-                  // _menuTile(
-                  //   icon: Icons.person_outline_rounded,
-                  //   title: "Edit Profile",
-                  //   subtitle: "Manage your personal information",
-                  //   onTap: () {},
-                  // ),
-                  _menuTile(
-                    icon: Icons.lock_open_rounded,
-                    title: "Security",
-                    subtitle: "Change password & settings",
-                    onTap: () {
-                      callNext(ChangePasswordScreen(managerID: managerId,), context);
-                    },
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-                    child: Text(
-                      "APP SETTINGS",
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey,
-                        letterSpacing: 1.1,
-                      ),
-                    ),
-                  ),
-                  _menuTile(
-                    icon: Icons.info_outline_rounded,
-                    title: "About Evento",
-                    subtitle: "Version 1.0.2",
-                    onTap: () {},
-                  ),
-                ],
-              ),
+          // 🔹 MENU
+        Expanded(
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Column(
+              children: [
+                _menuTile(
+                  icon: Icons.payment_rounded,
+                  title: "Payment Report",
+                  subtitle: "View all payments",
+                  onTap: () {},
+                ),
+                _menuTile(
+                  icon: Icons.group_add_rounded,
+                  title: "Boys Request",
+                  subtitle: "Pending & approved requests",
+                  onTap: () {},
+                ),
+                _menuTile(
+                  icon: Icons.task_alt_rounded,
+                  title: "Completed Works",
+                  subtitle: "Finished job details",
+                  onTap: () {},
+                ),
+                _menuTile(
+                  icon: Icons.lock_open_rounded,
+                  title: "Security",
+                  subtitle: "Change password",
+                  onTap: () {
+                    callNext(
+                      ChangePasswordScreen(managerID: managerId),
+                      context,
+                    );
+                  },
+                ),
+                _menuTile(
+                  icon: Icons.info_outline_rounded,
+                  title: "About Evento",
+                  subtitle: "Version 1.0.2",
+                  onTap: () {},
+                ),
+
+                const SizedBox(height: 8),
+
+                // 🔹 LOGOUT INSIDE SCROLL
+                _logoutTile(context),
+
+                const SizedBox(height: 16),
+              ],
             ),
           ),
+        ),
 
-          // 🔹 LOGOUT BUTTON
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 30),
-            child: InkWell(
-              onTap: () => logout(context),
-              child: Container(
-                height: 56,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  color: Colors.red.withOpacity(0.1),
-                ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.logout_rounded, color: Colors.redAccent),
-                    SizedBox(width: 12),
-                    Text(
-                      "Logout Session",
-                      style: TextStyle(
-                        color: Colors.redAccent,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+
+          // 🔹 LOGOUT
         ],
       ),
     );
@@ -260,4 +201,33 @@ class ManagerMenuScreen extends StatelessWidget {
       ),
     );
   }
+}
+Widget _logoutTile(BuildContext context) {
+  ManagerProvider managerProvider = Provider.of<ManagerProvider>(context);
+
+  return Container(
+    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+    decoration: BoxDecoration(
+      color: Colors.red.withOpacity(0.08),
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(color: Colors.red.withOpacity(0.3)),
+    ),
+    child: ListTile(
+      dense: true,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      leading: const Icon(Icons.logout_rounded, color: Colors.redAccent),
+      title: const Text(
+        "Logout",
+        style: TextStyle(
+          color: Colors.redAccent,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      subtitle: const Text(
+        "End current session",
+        style: TextStyle(fontSize: 12),
+      ),
+      onTap: () => managerProvider.logout(context),
+    ),
+  );
 }

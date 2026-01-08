@@ -1,5 +1,4 @@
 import 'package:evento/Boys/Providers/boys_provider.dart';
-import 'package:evento/Boys/Providers/boys_provider.dart';
 import 'package:evento/Constants/my_functions.dart';
 import 'package:evento/Manager/Providers/ManagerProvider.dart';
 import 'package:flutter/material.dart';
@@ -136,14 +135,17 @@ class ManagerHomeScreen extends StatelessWidget {
             title: "Upcoming Events",
             isSelected: provider.selectedTabIndex == 0,
             onTap: () {
-              provider.fetchEvents();
+              provider.fetchUpcomingEvents();
               provider.setTabIndex(0);
             }
           ),
           _tabItem(
             title: "Running Events",
             isSelected: provider.selectedTabIndex == 1,
-            onTap: () => provider.setTabIndex(1),
+            onTap: () {
+              provider.fetchRunningEvents();
+              provider.setTabIndex(1);
+            },
           ),
         ],
       ),

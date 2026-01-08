@@ -6,3 +6,6 @@ enum AppRole {
 class AppConfig {
   static late AppRole role;
 }
+
+
+enum PublishType { now, later }
