@@ -16,7 +16,7 @@ class ManagerMenuScreen extends StatelessWidget {
     required this.phoneNumber,
   }) : super(key: key);
 
-  Future<void> _logout(BuildContext context) async {
+  Future<void> logout(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
 
@@ -168,7 +168,7 @@ class ManagerMenuScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 30),
             child: InkWell(
-              onTap: () => _logout(context),
+              onTap: () => logout(context),
               child: Container(
                 height: 56,
                 decoration: BoxDecoration(

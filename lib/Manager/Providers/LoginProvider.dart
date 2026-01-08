@@ -80,10 +80,12 @@ class LoginProvider extends ChangeNotifier{
             ),
           );
         }
-      }else{
+      }
+      else{
+
         QuerySnapshot query = await db
             .collection("BOYS")
-            .where("PHONE_NUMBER", isEqualTo: phone)
+            .where("PHONE", isEqualTo: phone)
             .where("PASSWORD", isEqualTo: password)
             .get();
 

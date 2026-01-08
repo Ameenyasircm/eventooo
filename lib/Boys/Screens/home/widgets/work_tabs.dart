@@ -1,4 +1,5 @@
 import 'package:evento/Boys/Screens/home/widgets/work_card.dart';
+import 'package:evento/Constants/my_functions.dart';
 import 'package:evento/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 
@@ -9,6 +10,7 @@ import '../../../../core/utils/loader/loader.dart';
 import '../../../../core/utils/snackBarNotifications/snackBar_notifications.dart';
 import '../../../../core/utils/text_utils.dart';
 import '../../../../services/event_service.dart';
+import '../work_details_screen.dart';
 
 class WorkTabs extends StatelessWidget {
   const WorkTabs({super.key});
@@ -138,37 +140,11 @@ class ConfirmedWorksTab extends StatelessWidget {
 
             final event = events[index];
             return  InkWell(
-              onTap: () async {
+              onTap: (){
+                callNext(WorkDetailsScreen(work:event ,), context);
 
-                final confirmed = await showConfirmDialog(
-                  context: context,
-                  title: 'Take this work?',
-                  message: 'Do you want to take ${event.eventName}?',
-                  confirmText: 'Confirm',
-                );
 
-                if (!confirmed) return;
-
-                showLoader(context);
-
-                try {
-                  await _service.takeWork(event.eventId, userId);
-
-                  hideLoader(context);
-
-                  await showSuccessAlert(
-                    context: context,
-                    title: 'Success',
-                    message: 'Work confirmed successfully',
-                  );
-
-                } catch (e) {
-                  hideLoader(context);
-                  NotificationSnack.showError(e.toString());
-
-                }
               },
-
               child: WorkCard(
                 date: formatDate(event.eventDateTs),
                 time: formatTime(event.eventDateTs),

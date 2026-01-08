@@ -1,6 +1,8 @@
 
 import 'package:evento/Boys/Screens/home/widgets/profile_header.dart';
+import 'package:evento/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+import '../../../core/utils/alert_utils.dart';
 import 'widgets/work_tabs.dart';
 
 
@@ -18,6 +20,7 @@ class BoyHome extends StatelessWidget {
         body: SafeArea(
           child: Column(
             children: [
+              AppSpacing.h4,
               const ProfileHeader(),
               const WorkTabs(),
               Expanded(

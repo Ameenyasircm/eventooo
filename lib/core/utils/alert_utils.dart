@@ -1,3 +1,4 @@
+import 'package:evento/Constants/colors.dart';
 import 'package:evento/core/theme/app_spacing.dart';
 import 'package:evento/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
@@ -12,15 +13,15 @@ Future<void> showSuccessAlert({
     barrierDismissible: false,
     builder: (context) {
       return AlertDialog(
+        insetPadding: EdgeInsets.symmetric(horizontal: 30),
         backgroundColor: Colors.white,
-        title: Text(title,style: AppTypography.body1,),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.check_circle,color: Colors.green,size: 60,),
+            Image.asset("assets/gif/success.gif",height: 180,width: 200,),
             AppSpacing.h10,
-            Text(message,style: AppTypography.body1.copyWith(
-              fontWeight: FontWeight.w500
+            Text(message,textAlign: TextAlign.center,
+              style: AppTypography.body2.copyWith(color: Colors.grey,
             ),),
           ],
         ),
@@ -29,8 +30,16 @@ Future<void> showSuccessAlert({
             children: [
               Expanded(
                 child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: blue7E,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
                   onPressed: () => Navigator.pop(context),
-                  child:  Text('OK',style: AppTypography.body1),
+                  child:  Text('Done',style: AppTypography.body1.copyWith(
+                    color: Colors.white
+                  )),
                 ),
               ),
             ],

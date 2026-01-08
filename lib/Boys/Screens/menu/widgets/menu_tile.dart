@@ -6,12 +6,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class MenuTile extends StatelessWidget {
   final IconData icon;
   final String title;
+  final bool showIcon;
   final VoidCallback onTap;
 
   const MenuTile({
     super.key,
     required this.icon,
     required this.title,
+    this.showIcon=true,
     required this.onTap,
   });
 
@@ -33,6 +35,7 @@ class MenuTile extends StatelessWidget {
                 )
               ),
             ),
+            if(showIcon)
             const Icon(
               Icons.arrow_forward_ios,
               size: 16,

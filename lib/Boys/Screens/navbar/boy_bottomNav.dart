@@ -2,6 +2,7 @@ import 'package:evento/Boys/Screens/home/boy_home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../../Constants/colors.dart';
 import '../../Providers/boys_provider.dart';
 import '../menu/menu_screen.dart';
 
@@ -84,8 +85,8 @@ class _BoyBottomNavBarState extends State<BoyBottomNavBar> {
             });
           },
           // Styling to match your image
-          backgroundColor: const Color(0xff1A237E), // Dark blue background
-          selectedItemColor: const Color(0xffFF5722), // Orange for active
+          backgroundColor:  blue7E, // Dark blue background
+          selectedItemColor: red22, // Orange for active
           unselectedItemColor: Colors.white, // White for inactive
           type: BottomNavigationBarType.fixed,
           selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),

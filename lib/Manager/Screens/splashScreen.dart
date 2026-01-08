@@ -55,6 +55,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
   Future<void> localDB() async {
     prefs = await SharedPreferences.getInstance();
+
   }
 
   Future<void> getPackageName() async {
