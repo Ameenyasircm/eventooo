@@ -6,7 +6,7 @@ import 'widgets/menu_tile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MenuScreen extends StatelessWidget {
-  const MenuScreen({super.key});
+   MenuScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class MenuScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          const MenuHeader(),
+           MenuHeader(),
           AppSpacing.h12,
           MenuTile(
             icon: Icons.person_outline,

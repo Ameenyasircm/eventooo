@@ -70,18 +70,22 @@ class EventService {
 
 
   /// Take a work
-  Future<void> takeWork(String eventId, String userId) async {
+  Future<void> takeWork(String eventId, String boyId) async {
     final eventRef = _db.collection('EVENTS').doc(eventId);
-    final userWorkRef = _db
+
+    final confirmedBoyRef = eventRef
+        .collection('CONFIRMED_BOYS')
+        .doc(boyId);
+
+    final boyWorkRef = _db
         .collection('BOYS')
-        .doc(userId)
+        .doc(boyId)
         .collection('CONFIRMED_WORKS')
         .doc(eventId);
 
     await _db.runTransaction((transaction) async {
-      // 1️⃣ Read event
+      // 1️⃣ Read Event
       final eventSnap = await transaction.get(eventRef);
-
       if (!eventSnap.exists) {
         throw Exception('Event not found');
       }
@@ -90,30 +94,43 @@ class EventService {
       final int required = data['BOYS_REQUIRED'] ?? 0;
       final int taken = data['BOYS_TAKEN'] ?? 0;
 
-      // 2️⃣ Check limit
+      // 2️⃣ Check capacity
       if (taken >= required) {
         throw Exception('All slots are already filled');
       }
 
-      // 3️⃣ Prevent same user taking twice
-      final userWorkSnap = await transaction.get(userWorkRef);
-      if (userWorkSnap.exists) {
+      // 3️⃣ Prevent duplicate booking
+      final confirmedBoySnap = await transaction.get(confirmedBoyRef);
+      if (confirmedBoySnap.exists) {
         throw Exception('You already took this work');
+      }
+
+      final boyWorkSnap = await transaction.get(boyWorkRef);
+      if (boyWorkSnap.exists) {
+        throw Exception('Work already exists for this boy');
       }
 
       final int updatedTaken = taken + 1;
 
-      // 4️⃣ Update event
+      // 4️⃣ Update EVENT (source of truth)
       transaction.update(eventRef, {
         'BOYS_TAKEN': updatedTaken,
         if (updatedTaken == required) 'BOYS_STATUS': 'FULL',
       });
 
-      // 5️⃣ Copy event data to CONFIRMED_WORKS
-      transaction.set(userWorkRef, {
+      // 5️⃣ Add to EVENTS → CONFIRMED_BOYS
+      transaction.set(confirmedBoyRef, {
         ...data,
+        'BOY_ID': boyId,
         'STATUS': 'CONFIRMED',
-        'BOYS_TAKEN': updatedTaken, // ✅ correct value
+        'CONFIRMED_AT': FieldValue.serverTimestamp(),
+      });
+
+      // 6️⃣ Add to BOYS → CONFIRMED_WORKS
+      transaction.set(boyWorkRef, {
+        ...data,
+        'EVENT_ID': eventId,
+        'STATUS': 'CONFIRMED',
         'CONFIRMED_AT': FieldValue.serverTimestamp(),
       });
     });

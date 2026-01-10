@@ -21,7 +21,7 @@ class BoyHome extends StatelessWidget {
           child: Column(
             children: [
               AppSpacing.h4,
-              const ProfileHeader(),
+               ProfileHeader(boyID: boyID,boyName: boyName,boyPhone: boyPhone,),
               const WorkTabs(),
               Expanded(
                 child: TabBarView(

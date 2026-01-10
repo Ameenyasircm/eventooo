@@ -6,7 +6,8 @@ import '../../../../Constants/colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 
 class ProfileHeader extends StatelessWidget {
-  const ProfileHeader({super.key});
+  String boyName,boyID,boyPhone;
+   ProfileHeader({super.key,required this.boyName,required this.boyID,required this.boyPhone});
 
   @override
   Widget build(BuildContext context) {
@@ -26,12 +27,12 @@ class ProfileHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                  Text(
-                  'spine test boy onne',
+                  boyName,
                   style: AppTypography.body1,
                 ),
                 AppSpacing.h2,
                  Text(
-                  'BOY_A\n9058001001',
+                   boyPhone ,
                   style: AppTypography.caption,
                 ),
               ],

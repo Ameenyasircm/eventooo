@@ -42,7 +42,6 @@ class LoginProvider extends ChangeNotifier{
     // 1. Start Loading
     otpLoader = true;
     notifyListeners();
-
     try {
       if(packageName=='com.evento.manager') {
         QuerySnapshot query = await db
@@ -82,6 +81,7 @@ class LoginProvider extends ChangeNotifier{
         }
       }
       else{
+        print('$phone OIJDOEIJFR $password');
 
         QuerySnapshot query = await db
             .collection("BOYS")
@@ -99,6 +99,7 @@ class LoginProvider extends ChangeNotifier{
 
           await prefs.setString('adminName', adminName);
           await prefs.setString('adminID', adminID);
+          print('$phone NFRJFERF $adminID');
 
           final boysProvder =
           Provider.of<BoysProvider>(context, listen: false);
