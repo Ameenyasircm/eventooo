@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'Boys/Providers/boys_provider.dart';
 import 'Boys/Screens/navbar/boy_bottomNav.dart';
+import 'Manager/Providers/EventDetailProvider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (context) => LoginProvider(),),
           ChangeNotifierProvider(create: (context) => ManagerProvider(),),
           ChangeNotifierProvider(create: (context) => BoysProvider(),),
+          ChangeNotifierProvider(create: (context) => EventDetailsProvider(),),
           ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,

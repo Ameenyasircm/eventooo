@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../Manager/Models/event_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class EventService {
@@ -70,12 +71,22 @@ class EventService {
 
 
   /// Take a work
-  Future<void> takeWork(String eventId, String boyId) async {
+  Future<void> takeWork(String eventId,String boyId) async {
+    // 🔹 Read from SharedPreferences
+    final prefs = await SharedPreferences.getInstance();
+
+    // final String boyId = prefs.getString('boyId') ?? '';
+    final String boyName = prefs.getString('boyName') ?? '';
+    final String boyPhone = prefs.getString('boyPhone') ?? '';
+
+    if (boyId.isEmpty) {
+      throw Exception('Boy not logged in');
+    }
+
     final eventRef = _db.collection('EVENTS').doc(eventId);
 
-    final confirmedBoyRef = eventRef
-        .collection('CONFIRMED_BOYS')
-        .doc(boyId);
+    final confirmedBoyRef =
+    eventRef.collection('CONFIRMED_BOYS').doc(boyId);
 
     final boyWorkRef = _db
         .collection('BOYS')
@@ -100,36 +111,39 @@ class EventService {
       }
 
       // 3️⃣ Prevent duplicate booking
-      final confirmedBoySnap = await transaction.get(confirmedBoyRef);
-      if (confirmedBoySnap.exists) {
+      if ((await transaction.get(confirmedBoyRef)).exists) {
         throw Exception('You already took this work');
       }
 
-      final boyWorkSnap = await transaction.get(boyWorkRef);
-      if (boyWorkSnap.exists) {
+      if ((await transaction.get(boyWorkRef)).exists) {
         throw Exception('Work already exists for this boy');
       }
 
       final int updatedTaken = taken + 1;
 
-      // 4️⃣ Update EVENT (source of truth)
+      // 4️⃣ Update EVENT
       transaction.update(eventRef, {
         'BOYS_TAKEN': updatedTaken,
         if (updatedTaken == required) 'BOYS_STATUS': 'FULL',
       });
 
-      // 5️⃣ Add to EVENTS → CONFIRMED_BOYS
+      // 5️⃣ EVENTS → CONFIRMED_BOYS
       transaction.set(confirmedBoyRef, {
         ...data,
         'BOY_ID': boyId,
+        'BOY_NAME': boyName,
+        'BOY_PHONE': boyPhone,
         'STATUS': 'CONFIRMED',
         'CONFIRMED_AT': FieldValue.serverTimestamp(),
       });
 
-      // 6️⃣ Add to BOYS → CONFIRMED_WORKS
+      // 6️⃣ BOYS → CONFIRMED_WORKS
       transaction.set(boyWorkRef, {
         ...data,
         'EVENT_ID': eventId,
+        'BOY_ID': boyId,
+        'BOY_NAME': boyName,
+        'BOY_PHONE': boyPhone,
         'STATUS': 'CONFIRMED',
         'CONFIRMED_AT': FieldValue.serverTimestamp(),
       });

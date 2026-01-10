@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../Boys/Screens/boy_registration.dart';
 import 'create_new_event.dart';
-
+import 'event_detailed_screen.dart';
 
 class ManagerHomeScreen extends StatelessWidget {
   const ManagerHomeScreen({Key? key}) : super(key: key);
@@ -39,7 +39,10 @@ class ManagerHomeScreen extends StatelessWidget {
                   child: OutlinedButton.icon(
                     onPressed: () {
                       boysProvider.clearBoyForm();
-                      callNext(RegisterBoyScreen(registeredBy: 'MANAGER',), context);
+                      callNext(
+                         RegisterBoyScreen(registeredBy: 'MANAGER'),
+                        context,
+                      );
                     },
                     icon: const Icon(Icons.add, color: Color(0xffE65100)),
                     label: const Text(
@@ -60,7 +63,7 @@ class ManagerHomeScreen extends StatelessWidget {
                   child: ElevatedButton.icon(
                     onPressed: () {
                       managerProvider.clearEventRegScreens();
-                      callNext(CreateEventScreen(), context);
+                      callNext( CreateEventScreen(), context);
                     },
                     icon: const Icon(Icons.add, color: Colors.white),
                     label: const Text(
@@ -80,18 +83,16 @@ class ManagerHomeScreen extends StatelessWidget {
             ),
           ),
 
-          /// 🔹 TAB BAR
+          /// 🔹 TAB BAR (RUNNING FIRST)
           _buildTabBar(context),
 
           /// 🔹 EVENT LIST
           Expanded(
             child: Consumer<ManagerProvider>(
               builder: (context, provider, _) {
-                print(provider.upcomingEventsList.length.toString()+' FRJFNRJKF ');
-                print(provider.selectedTabIndex .toString()+' FRJFNRJKF ');
                 final events = provider.selectedTabIndex == 0
-                    ? provider.upcomingEventsList
-                    : provider.runningEventsList;
+                    ? provider.runningEventsList
+                    : provider.upcomingEventsList;
 
                 if (events.isEmpty) {
                   return const Center(
@@ -107,10 +108,18 @@ class ManagerHomeScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(16),
                   itemBuilder: (context, index) {
                     final event = events[index];
-                    return _buildEventCard(
-                      date: event.eventDate,
-                      title: event.eventName,
-                      boys: event.boysRequired.toString(),
+                    return InkWell(
+                      onTap: () {
+                        callNext(
+                          EventDetailScreen(eventId: event.eventId),
+                          context,
+                        );
+                      },
+                      child: _buildEventCard(
+                        date: event.eventDate,
+                        title: event.eventName,
+                        boys: event.boysRequired.toString(),
+                      ),
                     );
                   },
                 );
@@ -131,19 +140,23 @@ class ManagerHomeScreen extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _tabItem(
-            title: "Upcoming Events",
-            isSelected: provider.selectedTabIndex == 0,
-            onTap: () {
-              provider.fetchUpcomingEvents();
-              provider.setTabIndex(0);
-            }
-          ),
+
+          /// RUNNING EVENTS (INDEX 0)
           _tabItem(
             title: "Running Events",
-            isSelected: provider.selectedTabIndex == 1,
+            isSelected: provider.selectedTabIndex == 0,
             onTap: () {
               provider.fetchRunningEvents();
+              provider.setTabIndex(0);
+            },
+          ),
+
+          /// UPCOMING EVENTS (INDEX 1)
+          _tabItem(
+            title: "Upcoming Events",
+            isSelected: provider.selectedTabIndex == 1,
+            onTap: () {
+              provider.fetchUpcomingEvents();
               provider.setTabIndex(1);
             },
           ),

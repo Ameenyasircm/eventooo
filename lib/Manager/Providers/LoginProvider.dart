@@ -58,14 +58,14 @@ class LoginProvider extends ChangeNotifier{
           String adminName = dataMap['NAME'] ?? "";
           await prefs.setString('phone_number', phone);
           await prefs.setString('password', password);
-
           await prefs.setString('adminName', adminName);
           await prefs.setString('adminID', adminID);
+
 
           final managerProvider =
           Provider.of<ManagerProvider>(context, listen: false);
           managerProvider.setTabIndex(0);
-          managerProvider.fetchUpcomingEvents();
+          managerProvider.fetchRunningEvents();
 
           callNextReplacement(ManagerBottom(
             adminID: adminID, adminName: adminName, adminPhone: phone,),
@@ -99,6 +99,11 @@ class LoginProvider extends ChangeNotifier{
 
           await prefs.setString('adminName', adminName);
           await prefs.setString('adminID', adminID);
+
+          await prefs.setString('boyName', adminName);
+          await prefs.setString('boyID', adminID);
+          await prefs.setString('boyPhone', phone);
+
           print('$phone NFRJFERF $adminID');
 
           final boysProvder =
